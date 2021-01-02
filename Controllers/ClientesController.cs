@@ -12,6 +12,8 @@ namespace Sistema_Veterinaria.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    //[Authorize]    
+    //[EnableCors (Startup.MY_CORS)] 
     public class ClientesController : ControllerBase
     {
         // GET: api/<ClientesController>
@@ -135,7 +137,7 @@ namespace Sistema_Veterinaria.Controllers
                 catch (Exception ex)
                 {
                     error = true;
-                    Console.WriteLine(ex.InnerException.Message);
+                    Console.WriteLine(ex);
 
                 }
             }
@@ -144,4 +146,5 @@ namespace Sistema_Veterinaria.Controllers
             return new JsonResult(Result);
         }
     }
+
 }
