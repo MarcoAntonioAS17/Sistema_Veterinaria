@@ -71,9 +71,7 @@ namespace Sistema_Veterinaria.Models
 
                 entity.Property(e => e.IdCitas).HasColumnName("idCitas");
 
-                entity.Property(e => e.Fecha).HasColumnType("date");
-
-                entity.Property(e => e.Hora).HasColumnType("time");
+                entity.Property(e => e.FechaHora).HasColumnType("datetime");
 
                 entity.Property(e => e.Notas)
                     .HasColumnType("varchar(100)")
@@ -144,9 +142,7 @@ namespace Sistema_Veterinaria.Models
 
                 entity.Property(e => e.IdCompras).HasColumnName("idCompras");
 
-                entity.Property(e => e.Fecha).HasColumnType("date");
-
-                entity.Property(e => e.Hora).HasColumnType("time");
+                entity.Property(e => e.FechaHora).HasColumnType("datetime");
 
                 entity.Property(e => e.RProveedor).HasColumnName("R_Proveedor");
 
@@ -343,9 +339,7 @@ namespace Sistema_Veterinaria.Models
 
                 entity.ToTable("proveedores");
 
-                entity.Property(e => e.IdProveedores)
-                    .HasColumnName("idProveedores")
-                    .ValueGeneratedNever();
+                entity.Property(e => e.IdProveedores).HasColumnName("idProveedores");
 
                 entity.Property(e => e.Correo)
                     .HasColumnType("varchar(45)")
@@ -432,9 +426,7 @@ namespace Sistema_Veterinaria.Models
 
                 entity.Property(e => e.IdVentas).HasColumnName("idVentas");
 
-                entity.Property(e => e.Fecha).HasColumnType("date");
-
-                entity.Property(e => e.Hora).HasColumnType("time");
+                entity.Property(e => e.FechaHora).HasColumnType("datetime");
 
                 entity.Property(e => e.RCliente).HasColumnName("R_Cliente");
 

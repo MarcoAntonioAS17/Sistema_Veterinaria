@@ -7,8 +7,7 @@ namespace Sistema_Veterinaria.Models
     {
         public int IdVentas { get; set; }
         public int RCliente { get; set; }
-        public DateTime Fecha { get; set; }
-        public TimeSpan Hora { get; set; }
+        public DateTime FechaHora { get; set; }
         public int? RUsuario { get; set; }
 
         public virtual Clientes RClienteNavigation { get; set; }
