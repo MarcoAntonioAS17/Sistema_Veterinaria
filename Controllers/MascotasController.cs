@@ -59,6 +59,29 @@ namespace Sistema_Veterinaria.Controllers
             return mascota;
         }
 
+        // GET api/<MascotasController>/5
+        [HttpGet("Cliente/{id}")]
+        public IEnumerable<Mascota> GetbyCliente(int id)
+        {
+            var context = new veterinariaContext();
+            var mascota = from m in context.Mascotas
+                          join c in context.Clientes on m.RCliente equals c.IdClientes
+                          orderby m.IdMascotas ascending
+                          where c.IdClientes == id
+                          select new Mascota
+                          {
+                              IdMascotas = m.IdMascotas,
+                              Nombre = m.Nombre,
+                              Edad = m.Edad,
+                              Tipo = m.Tipo,
+                              Raza = m.Raza,
+                              Descripcion = m.Descripcion,
+                              RCliente = c.IdClientes,
+                              ClienteNombre = c.Nombre
+                          };
+            return mascota;
+        }
+
         // POST api/<MascotasController>
         [HttpPost]
         public IActionResult Post([FromBody] Mascotas value)
