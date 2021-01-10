@@ -5,6 +5,11 @@ namespace Sistema_Veterinaria.Models
 {
     public partial class Compras
     {
+        public Compras()
+        {
+            DetalleCompras = new HashSet<DetalleCompras>();
+        }
+
         public int IdCompras { get; set; }
         public int RProveedor { get; set; }
         public DateTime FechaHora { get; set; }
@@ -12,5 +17,6 @@ namespace Sistema_Veterinaria.Models
 
         public virtual Proveedores RProveedorNavigation { get; set; }
         public virtual Usuarios RUsuarioNavigation { get; set; }
+        public virtual ICollection<DetalleCompras> DetalleCompras { get; set; }
     }
 }

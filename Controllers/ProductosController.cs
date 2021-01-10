@@ -52,7 +52,7 @@ namespace Sistema_Veterinaria.Controllers
                             join prove in context.Proveedores on pro.RProveedor equals prove.IdProveedores
                             join cate in context.Categorias on pro.RCategoria equals cate.IdCategorias
                             orderby pro.IdProductos ascending
-                            where pro.IdProductos == id
+                            where pro.IdProductos == id &&  pro.IdProductos.Length < 4
                             select new Producto
                             {
                                 IdProductos = pro.IdProductos,

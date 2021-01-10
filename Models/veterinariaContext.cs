@@ -174,7 +174,8 @@ namespace Sistema_Veterinaria.Models
 
             modelBuilder.Entity<DetalleCompras>(entity =>
             {
-                entity.HasNoKey();
+                entity.HasKey(e => e.IdDetalleCompra)
+                    .HasName("PRIMARY");
 
                 entity.ToTable("detalle_compras");
 
@@ -183,6 +184,8 @@ namespace Sistema_Veterinaria.Models
 
                 entity.HasIndex(e => e.RProducto)
                     .HasName("FK_R_Producto_idx");
+
+                entity.Property(e => e.IdDetalleCompra).HasColumnName("id_DetalleCompra");
 
                 entity.Property(e => e.RCompra).HasColumnName("R_Compra");
 
@@ -194,19 +197,20 @@ namespace Sistema_Veterinaria.Models
                     .HasCollation("utf8_general_ci");
 
                 entity.HasOne(d => d.RCompraNavigation)
-                    .WithMany()
+                    .WithMany(p => p.DetalleCompras)
                     .HasForeignKey(d => d.RCompra)
                     .HasConstraintName("FK_R_Compra");
 
                 entity.HasOne(d => d.RProductoNavigation)
-                    .WithMany()
+                    .WithMany(p => p.DetalleCompras)
                     .HasForeignKey(d => d.RProducto)
                     .HasConstraintName("FK_R_ProductoCompras");
             });
 
             modelBuilder.Entity<DetalleVentas>(entity =>
             {
-                entity.HasNoKey();
+                entity.HasKey(e => e.IdDetalleVentas)
+                    .HasName("PRIMARY");
 
                 entity.ToTable("detalle_ventas");
 
@@ -215,6 +219,8 @@ namespace Sistema_Veterinaria.Models
 
                 entity.HasIndex(e => e.RVenta)
                     .HasName("FK_R_Venta_idx");
+
+                entity.Property(e => e.IdDetalleVentas).HasColumnName("id_DetalleVentas");
 
                 entity.Property(e => e.RProducto)
                     .IsRequired()
@@ -226,12 +232,12 @@ namespace Sistema_Veterinaria.Models
                 entity.Property(e => e.RVenta).HasColumnName("R_Venta");
 
                 entity.HasOne(d => d.RProductoNavigation)
-                    .WithMany()
+                    .WithMany(p => p.DetalleVentas)
                     .HasForeignKey(d => d.RProducto)
                     .HasConstraintName("FK_R_ProductoVentas");
 
                 entity.HasOne(d => d.RVentaNavigation)
-                    .WithMany()
+                    .WithMany(p => p.DetalleVentas)
                     .HasForeignKey(d => d.RVenta)
                     .HasConstraintName("FK_R_Venta");
             });
@@ -400,7 +406,7 @@ namespace Sistema_Veterinaria.Models
 
                 entity.Property(e => e.Password)
                     .IsRequired()
-                    .HasColumnType("varchar(20)")
+                    .HasColumnType("varchar(200)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 

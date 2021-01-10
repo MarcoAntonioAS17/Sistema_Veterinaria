@@ -5,6 +5,12 @@ namespace Sistema_Veterinaria.Models
 {
     public partial class Productos
     {
+        public Productos()
+        {
+            DetalleCompras = new HashSet<DetalleCompras>();
+            DetalleVentas = new HashSet<DetalleVentas>();
+        }
+
         public string IdProductos { get; set; }
         public string Nombre { get; set; }
         public float PrecioVenta { get; set; }
@@ -17,5 +23,7 @@ namespace Sistema_Veterinaria.Models
 
         public virtual Categorias RCategoriaNavigation { get; set; }
         public virtual Proveedores RProveedorNavigation { get; set; }
+        public virtual ICollection<DetalleCompras> DetalleCompras { get; set; }
+        public virtual ICollection<DetalleVentas> DetalleVentas { get; set; }
     }
 }
