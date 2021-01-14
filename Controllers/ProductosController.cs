@@ -23,6 +23,7 @@ namespace Sistema_Veterinaria.Controllers
             var producto = from pro in context.Productos
                            join prove in context.Proveedores on pro.RProveedor equals prove.IdProveedores
                            join cate in context.Categorias on pro.RCategoria equals cate.IdCategorias
+                           where pro.IdProductos.Length > 4
                            orderby pro.IdProductos ascending
                            select new Producto
                            {
@@ -52,7 +53,7 @@ namespace Sistema_Veterinaria.Controllers
                             join prove in context.Proveedores on pro.RProveedor equals prove.IdProveedores
                             join cate in context.Categorias on pro.RCategoria equals cate.IdCategorias
                             orderby pro.IdProductos ascending
-                            where pro.IdProductos == id &&  pro.IdProductos.Length < 4
+                            where pro.IdProductos == id
                             select new Producto
                             {
                                 IdProductos = pro.IdProductos,

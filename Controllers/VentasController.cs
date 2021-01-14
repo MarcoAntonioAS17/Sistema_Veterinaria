@@ -130,29 +130,39 @@ namespace Sistema_Veterinaria.Controllers
                     {
                         if (string.IsNullOrWhiteSpace(detalleVenta.RProducto))
                         {
-                            Productos producto = (from pro in context.Productos
+                            Productos servicio = (from pro in context.Productos
                                                   orderby pro.IdProductos descending
-                                                  where pro.IdProductos.Length < 4
+                                                  where pro.Nombre == detalleVenta.RProductoNombre && pro.PrecioVenta == detalleVenta.Precio 
                                                   select pro).FirstOrDefault<Productos>();
-                            int id;
-                            if (producto == null)
-                                id = 1;
-                            else
-                                id = Int32.Parse(producto.IdProductos) + 1;
 
-                            Productos nuevo_servicio = new Productos
+                            if (servicio == null)
                             {
-                                IdProductos = id.ToString(),
-                                Nombre = WebUtility.HtmlEncode(detalleVenta.RProductoNombre),
-                                PrecioVenta = detalleVenta.Precio
-                            };
+                                Productos producto = (from pro in context.Productos
+                                                      orderby pro.IdProductos descending
+                                                      where pro.IdProductos.Length < 4
+                                                      select pro).FirstOrDefault<Productos>();
+                                int id;
+                                if (producto == null)
+                                    id = 1;
+                                else
+                                    id = Int32.Parse(producto.IdProductos) + 1;
+                                //Nuevo Servicio
+                                servicio = new Productos
+                                {
+                                    IdProductos = id.ToString(),
+                                    Nombre = WebUtility.HtmlEncode(detalleVenta.RProductoNombre),
+                                    PrecioVenta = detalleVenta.Precio
+                                };
 
-                            context.Productos.Add(nuevo_servicio);
-                            context.SaveChanges();
+                                context.Productos.Add(servicio);
+                                context.SaveChanges();
+
+                            }
+
 
                             DetalleVentas detalleVentas = new DetalleVentas()
                             {
-                                RProducto = nuevo_servicio.IdProductos,
+                                RProducto = servicio.IdProductos,
                                 RVenta = id_venta.IdVentas,
                                 Cantidad = detalleVenta.Cantidad
                             };
@@ -211,41 +221,58 @@ namespace Sistema_Veterinaria.Controllers
 
         }
 
-        // PUT api/<VentasController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
         // DELETE api/<VentasController>/5
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
             bool error = false;
 
+            var context = new veterinariaContext();
+            var transaccion = context.Database.BeginTransaction();
             try
-            {
-                var context = new veterinariaContext();
+            {   
                 Ventas ventas = (from vent in context.Ventas
                                  where vent.IdVentas == id
                                  select vent).FirstOrDefault<Ventas>();
+
                 if (ventas == null)
                 {
                     return new JsonResult(new { Status = "Fail" });
                 }
+
+                List<DetalleVentas> dventas = (from dventa in context.DetalleVentas
+                              where dventa.RVenta == ventas.IdVentas
+                              select dventa).ToList<DetalleVentas>();
+
+                foreach(DetalleVentas elem in dventas)
+                {
+                    if (elem.RProducto.Length > 3)
+                    {
+                        Productos producto = (from pro in context.Productos
+                                              where pro.IdProductos == elem.RProducto
+                                              select pro).FirstOrDefault<Productos>();
+                        producto.Cantidad = producto.Cantidad + elem.Cantidad;
+
+                        context.SaveChanges();
+
+                    }
+                }
                 context.Ventas.Remove(ventas);
+
                 context.SaveChanges();
+                transaccion.Commit();
             }
             catch (Exception ex)
             {
+                Console.WriteLine("Error ocurrido.");
+                Console.WriteLine(ex.Message);
                 error = true;
-                Console.WriteLine(ex);
-
             }
-        
-        var Result = new { Status = !error ? "Success" : "Fail" };
+            transaccion.Dispose();
 
-        return new JsonResult(Result);
+            var Result = new { Status = !error ? "Success" : "Fail" };
+
+            return new JsonResult(Result);
 
         }
     }
