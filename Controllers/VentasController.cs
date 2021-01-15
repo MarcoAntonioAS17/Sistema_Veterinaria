@@ -102,7 +102,7 @@ namespace Sistema_Veterinaria.Controllers
         {
             bool error = false;
 
-            if (value.RCliente == 0 || value.RUsuario == 0)
+            if (value.RCliente == 0 || value.RUsuario == 0 || value.Productos.Count < 1)
             {
                 error = true;
             }
