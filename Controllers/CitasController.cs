@@ -38,6 +38,31 @@ namespace Sistema_Veterinaria.Controllers
             return citas;
         }
 
+        // GET: api/<CitasController>/Inicio
+        [HttpGet("Inicio")]
+        public IEnumerable<Cita> GetInicio()
+        {
+            var context = new veterinariaContext();
+            var citas = from cit in context.Citas
+                        join cli in context.Clientes on cit.RCliente equals cli.IdClientes
+                        join mas in context.Mascotas on cit.RMascota equals mas.IdMascotas
+                        where cit.FechaHora >= DateTime.Now && cit.FechaHora < DateTime.Now.AddMonths(1)
+                        orderby cit.FechaHora ascending
+                        select new Cita
+                        {
+                            IdCitas = cit.IdCitas,
+                            RCliente = cli.IdClientes,
+                            NombreCliente = cli.Nombre,
+                            FechaHora = cit.FechaHora,
+                            Tipo = cit.Tipo,
+                            RMascota = mas.IdMascotas,
+                            NombreMascota = mas.Nombre,
+                            Notas = cit.Notas
+                        };
+            
+            return citas;
+        }
+
         // GET api/<CitasController>/5
         [HttpGet("{id}")]
         public Cita Get(int id)
@@ -46,7 +71,7 @@ namespace Sistema_Veterinaria.Controllers
             var cita = (from cit in context.Citas
                         join cli in context.Clientes on cit.RCliente equals cli.IdClientes
                         join mas in context.Mascotas on cit.RMascota equals mas.IdMascotas
-                        orderby cit.IdCitas ascending
+                        orderby cit.FechaHora ascending
                         where cit.IdCitas == id
                         select new Cita
                         {
