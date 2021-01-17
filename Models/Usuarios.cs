@@ -16,6 +16,7 @@ namespace Sistema_Veterinaria.Models
         public string UserName { get; set; }
         public string Password { get; set; }
         public int Nivel { get; set; }
+        public string Token { get; set; }
 
         public virtual ICollection<Compras> Compras { get; set; }
         public virtual ICollection<Registro> Registro { get; set; }

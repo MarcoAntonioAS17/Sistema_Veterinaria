@@ -410,6 +410,11 @@ namespace Sistema_Veterinaria.Models
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
+                entity.Property(e => e.Token)
+                    .HasColumnType("varchar(200)")
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
                 entity.Property(e => e.UserName)
                     .IsRequired()
                     .HasColumnType("varchar(20)")
