@@ -7,11 +7,13 @@ using System.Threading.Tasks;
 using Sistema_Veterinaria.Models;
 using System.Net;
 using Sistema_Veterinaria.Encryption;
+using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Sistema_Veterinaria.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UsuariosController : ControllerBase

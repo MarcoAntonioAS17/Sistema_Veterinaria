@@ -6,11 +6,13 @@ using System.Threading.Tasks;
 
 using Sistema_Veterinaria.Models;
 using System.Net;
+using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Sistema_Veterinaria.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class InicioController : ControllerBase
@@ -46,13 +48,16 @@ namespace Sistema_Veterinaria.Controllers
             var config = (from conf in context.Configuracion
                           select conf).FirstOrDefault<Configuracion>();
 
-            prod_caducar = (from prod in context.Productos
-                            where prod.Caducidad < DateTime.Now.AddDays(config.DiasCaducidad)
-                            select prod).Count();
+            if (config != null)
+            {
+                prod_caducar = (from prod in context.Productos
+                                where prod.Caducidad < DateTime.Now.AddDays(config.DiasCaducidad)
+                                select prod).Count();
 
-            prod_agotarse = (from prod in context.Productos
-                             where prod.Cantidad < config.CantidadInventario
-                             select prod).Count();
+                prod_agotarse = (from prod in context.Productos
+                                 where prod.Cantidad < config.CantidadInventario
+                                 select prod).Count();
+            }
 
             var Result = new
             {

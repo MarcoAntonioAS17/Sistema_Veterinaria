@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+using Microsoft.AspNetCore.Authorization;
 using Sistema_Veterinaria.Models;
 using System.Net;
 
@@ -11,6 +12,7 @@ using System.Net;
 
 namespace Sistema_Veterinaria.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ComprasController : ControllerBase
