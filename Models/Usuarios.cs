@@ -8,7 +8,6 @@ namespace Sistema_Veterinaria.Models
         public Usuarios()
         {
             Compras = new HashSet<Compras>();
-            Registro = new HashSet<Registro>();
             Ventas = new HashSet<Ventas>();
         }
 
@@ -19,7 +18,6 @@ namespace Sistema_Veterinaria.Models
         public string Token { get; set; }
 
         public virtual ICollection<Compras> Compras { get; set; }
-        public virtual ICollection<Registro> Registro { get; set; }
         public virtual ICollection<Ventas> Ventas { get; set; }
     }
 }

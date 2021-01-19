@@ -25,7 +25,6 @@ namespace Sistema_Veterinaria.Models
         public virtual DbSet<Mascotas> Mascotas { get; set; }
         public virtual DbSet<Productos> Productos { get; set; }
         public virtual DbSet<Proveedores> Proveedores { get; set; }
-        public virtual DbSet<Registro> Registro { get; set; }
         public virtual DbSet<Usuarios> Usuarios { get; set; }
         public virtual DbSet<Ventas> Ventas { get; set; }
 
@@ -364,35 +363,6 @@ namespace Sistema_Veterinaria.Models
                     .HasColumnType("varchar(20)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
-            });
-
-            modelBuilder.Entity<Registro>(entity =>
-            {
-                entity.HasKey(e => e.IdAcciones)
-                    .HasName("PRIMARY");
-
-                entity.ToTable("registro");
-
-                entity.HasIndex(e => e.RUsuario)
-                    .HasName("FK_UsuarioRegistro_idx");
-
-                entity.Property(e => e.IdAcciones).HasColumnName("idAcciones");
-
-                entity.Property(e => e.Detalles)
-                    .HasColumnType("varchar(45)")
-                    .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
-
-                entity.Property(e => e.FechaHora)
-                    .HasColumnName("Fecha_Hora")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.RUsuario).HasColumnName("R_Usuario");
-
-                entity.HasOne(d => d.RUsuarioNavigation)
-                    .WithMany(p => p.Registro)
-                    .HasForeignKey(d => d.RUsuario)
-                    .HasConstraintName("FK_UsuarioRegistro");
             });
 
             modelBuilder.Entity<Usuarios>(entity =>
