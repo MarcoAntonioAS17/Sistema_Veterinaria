@@ -58,9 +58,8 @@ namespace Sistema_Veterinaria.Controllers
         {
             bool error = false;
 
-            if (string.IsNullOrWhiteSpace(value.UserName)
-                || string.IsNullOrWhiteSpace(value.Password)
-                || value.Password.Length < 6 )
+            if (value.Password.Length < 6 
+                || value.UserName.Length < 8)
             {
                 error = true;
             }
@@ -93,7 +92,9 @@ namespace Sistema_Veterinaria.Controllers
 
             if (string.IsNullOrWhiteSpace(value.UserName)
                 || string.IsNullOrWhiteSpace(value.Password)
-                || value.PasswordN.Length < 6)
+                || value.PasswordN.Length < 6
+                || value.Password.Length < 6
+                )
             {
                 error = true;
             }
@@ -106,7 +107,10 @@ namespace Sistema_Veterinaria.Controllers
                                          where usu.IdUser == id && usu.UserName == value.UserName 
                                          && usu.Password == Encrypt.getSHA256(value.Password)
                                         select usu).SingleOrDefault<Usuarios>();
-                    
+                    if (usuario == null)
+                    {
+                        return new JsonResult(new { Status = "Fail" });
+                    }
                     usuario.Password = WebUtility.HtmlDecode(value.PasswordN);
                     usuario.Password = Encrypt.getSHA256(usuario.Password);
                     usuario.UserName = WebUtility.HtmlDecode(value.UserName);

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Sistema_Veterinaria.Models;
 using System.Net;
 using Microsoft.AspNetCore.Authorization;
+using System.Text.RegularExpressions;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -81,9 +82,8 @@ namespace Sistema_Veterinaria.Controllers
         {
             bool error = false;
 
-            if (string.IsNullOrWhiteSpace(value.IdProductos)
-                || string.IsNullOrWhiteSpace(value.Nombre)
-                ){
+            if (validar_campos(value))
+            {
                 error = true;
             }
             else{
@@ -112,9 +112,7 @@ namespace Sistema_Veterinaria.Controllers
         public IActionResult Put(String id, [FromBody] Productos value)
         {
             bool error = false;
-            if (string.IsNullOrWhiteSpace(id)
-                || string.IsNullOrWhiteSpace(value.Nombre)
-                )
+            if (validar_campos(value))
             {
                 error = true;
             }
@@ -130,7 +128,10 @@ namespace Sistema_Veterinaria.Controllers
                                     where pro.IdProductos == id
                                     select pro).FirstOrDefault<Productos>();
 
-                    
+                    if (producto == null)
+                    {
+                        return new JsonResult(new { Status = "Fail" });
+                    }
                     producto.Nombre = WebUtility.HtmlEncode(value.Nombre);
                     producto.PrecioVenta = value.PrecioVenta;
                     producto.PrecioCompra = value.PrecioCompra;
@@ -172,7 +173,10 @@ namespace Sistema_Veterinaria.Controllers
                                     orderby pro.IdProductos ascending
                                     where pro.IdProductos == id
                                     select pro).FirstOrDefault<Productos>();
-                    
+                    if (producto == null)
+                    {
+                        return new JsonResult(new { Status = "Fail" });
+                    }
                     context.Productos.Remove(producto);
                     context.SaveChanges();
                 }
@@ -184,6 +188,48 @@ namespace Sistema_Veterinaria.Controllers
             }
             var Result = new { Status = !error ? "Success" : "Fail" };
             return new JsonResult(Result);
+        }
+
+        bool validar_campos(Productos value)
+        {
+            bool error = false;
+            Regex alfanumerico = new Regex("^[a-zA-Z0-9 ]*$");
+            Regex nombre = new Regex("^[a-zA-Z0-9,. ]*$");
+
+            if (!alfanumerico.IsMatch(value.IdProductos) || value.IdProductos.Length > 15 || string.IsNullOrWhiteSpace(value.IdProductos))
+            {
+                error = true;                
+            }
+            if (!alfanumerico.IsMatch(value.Nombre) || value.Nombre.Length > 45 || string.IsNullOrWhiteSpace(value.Nombre))
+            {
+                error = true;
+            }
+            if (value.PrecioVenta < 0 )
+            {
+                error = true;
+            }
+            if (value.PrecioCompra < 0)
+            {
+                error = true;
+            }
+            if (value.Cantidad < 0 )
+            {
+                error = true;
+            }
+            if (value.RCategoria < 1)
+            {
+                error = true;
+            }
+            if (value.RProveedor < 1)
+            {
+                error = true;
+            }
+            if (value.Descripcion.Length > 0)
+                if (!nombre.IsMatch(value.Descripcion) || value.Descripcion.Length > 60)
+                {
+                    error = true;
+                }
+            return error;
         }
     }
 

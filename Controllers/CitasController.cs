@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Sistema_Veterinaria.Models;
 using System.Net;
+using System.Text.RegularExpressions;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Sistema_Veterinaria.Controllers
@@ -96,11 +97,7 @@ namespace Sistema_Veterinaria.Controllers
         {
             bool error = false;
 
-            if (string.IsNullOrWhiteSpace(value.Tipo)
-                || value.RCliente == null
-                || value.RMascota == null                
-                || value.FechaHora == null
-                )
+            if (validar_campos(value))
             {
                 error = true;
             }
@@ -131,11 +128,7 @@ namespace Sistema_Veterinaria.Controllers
         {
             bool error = false;
 
-            if (string.IsNullOrWhiteSpace(value.Tipo)
-                || value.RCliente == null
-                || value.RMascota == null
-                || value.FechaHora == null
-                )
+            if (validar_campos(value))
             {
                 error = true;
             }
@@ -203,6 +196,30 @@ namespace Sistema_Veterinaria.Controllers
             var Result = new { Status = !error ? "Success" : "Fail" };
             return new JsonResult(Result);
         }
+
+        private bool validar_campos(Citas value)
+        {
+            bool error = false;
+            Regex alfanumerico = new Regex("^[a-zA-Z0-9 ]*$");
+
+            if (value.RCliente == null || value.RMascota == null || value.FechaHora == null)
+                error = true;
+
+            var contex = new veterinariaContext();
+            int mascotas = (from masc in contex.Mascotas
+                                 where masc.RCliente == value.RCliente && masc.IdMascotas == value.RMascota
+                                 select masc).Count();
+            if (mascotas < 1)
+                error = true;
+
+            if (!string.IsNullOrWhiteSpace(value.Notas))
+            {
+                if (!alfanumerico.IsMatch(value.Notas))
+                    error = true;
+            }
+
+            return error;
+        }
     }
 
     public class Cita
@@ -217,3 +234,4 @@ namespace Sistema_Veterinaria.Controllers
         public string Notas { get; set; }
     }
 }
+

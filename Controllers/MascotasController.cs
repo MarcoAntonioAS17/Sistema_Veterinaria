@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Sistema_Veterinaria.Models;
 using System.Net;
 using Microsoft.AspNetCore.Authorization;
+using System.Text.RegularExpressions;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -90,9 +91,8 @@ namespace Sistema_Veterinaria.Controllers
         {
             bool error = false;
 
-            if (string.IsNullOrWhiteSpace(value.Nombre)  
-                || value.Edad == null
-                ){
+            if (validar_campos(value.Nombre, value.Edad, value.Tipo, value.Raza, value.Descripcion))
+            {
                 error = true;
             }
             else{
@@ -125,11 +125,7 @@ namespace Sistema_Veterinaria.Controllers
         {
             bool error = false;
 
-            if (string.IsNullOrWhiteSpace(value.Nombre)
-                || value.Edad == null
-                || id == 0
-                || value.RCliente == 0
-                )
+            if (validar_campos(value.Nombre, value.Edad, value.Tipo, value.Raza, value.Descripcion))
             {
                 error = true;
             }
@@ -142,6 +138,10 @@ namespace Sistema_Veterinaria.Controllers
                     Mascotas mascota = (from m in context.Mascotas
                                         where m.IdMascotas == id
                                         select m).FirstOrDefault<Mascotas>();
+                    if (mascota == null)
+                    {
+                        return new JsonResult(new { Status = "Fail" });
+                    }
 
                     mascota.Nombre = WebUtility.HtmlEncode(value.Nombre);
                     mascota.Edad = value.Edad; 
@@ -195,6 +195,44 @@ namespace Sistema_Veterinaria.Controllers
             var Result = new { Status = !error ? "Success" : "Fail" };
 
             return new JsonResult(Result);
+        }
+
+        bool validar_campos(string nombre, DateTime edad, string tipo, string raza, string descrip)
+        {
+            bool error = false;
+            Regex solo_letras = new Regex("^[a-zA-Z ]*$");
+
+            if (!string.IsNullOrWhiteSpace(nombre))
+            {
+                if (!solo_letras.IsMatch(nombre))
+                    error = true;
+            }
+            else
+            {
+                error = true;
+            }
+            if (edad > DateTime.Now)
+            {
+                error = true;
+            }
+
+            if (!string.IsNullOrWhiteSpace(tipo))
+            {
+                if (!solo_letras.IsMatch(tipo))
+                    error = true;
+            }
+            if (!string.IsNullOrWhiteSpace(raza))
+            {
+                if (!solo_letras.IsMatch(raza))
+                    error = true;
+            }
+            if (!string.IsNullOrWhiteSpace(descrip))
+            {
+                if (!solo_letras.IsMatch(descrip))
+                    error = true;
+            }
+
+            return error;
         }
     }
 

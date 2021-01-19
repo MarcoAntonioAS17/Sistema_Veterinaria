@@ -42,9 +42,10 @@ namespace Sistema_Veterinaria.Controllers
             //var bar = this.protector.Protect(user.IdUser.ToString());
             //foo.Id = bar;
 
-            var bar = this.protector.Protect(System.Text.Encoding.UTF8.GetBytes(user.UserName));
-            foo.UserName = System.Text.Encoding.UTF8.GetString(bar);
+            //var bar = this.protector.Protect(System.Text.Encoding.UTF8.GetBytes(user.UserName));
+            //foo.UserName = System.Text.Encoding.UTF8.GetString(bar);
 
+            foo.UserName = user.UserName;
             foo.Nivel = user.Nivel;
             foo.Token = user.Token;
 

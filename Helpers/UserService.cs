@@ -46,7 +46,7 @@ namespace Sistema_Veterinaria.Helpers
                 Subject = new ClaimsIdentity(new Claim[] {
                     new Claim (ClaimTypes.Name, user.IdUser.ToString ())
                 }),
-                Expires = DateTime.Now.AddDays(1),
+                Expires = DateTime.Now.AddHours(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 
