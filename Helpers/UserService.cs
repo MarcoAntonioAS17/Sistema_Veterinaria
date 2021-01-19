@@ -14,26 +14,28 @@ namespace Sistema_Veterinaria.Helpers
     public class UserService : IUserService
     {
 
-        private List<Usuarios> _users = new List<Usuarios>();
+        
 
         private readonly JWTSettings _jwtSettings;
         
         public UserService(IOptions<JWTSettings> jwtSettings)
         {
             _jwtSettings = jwtSettings.Value;
-            _users = GetUsuarios();
+            
         }
 
-        private List<Usuarios> GetUsuarios()
+        private List<Usuarios> GetUsuarios(veterinariaContext context)
         {
-            var context = new veterinariaContext();
+            
             var user_list = (from us in context.Usuarios
                              select us).ToList<Usuarios>();
             return user_list;
         }
 
-        public Usuarios Authenticate(string username, string password)
+        public Usuarios Authenticate(veterinariaContext context, string username, string password)
         {
+            List<Usuarios> _users = new List<Usuarios>();
+            _users = GetUsuarios(context);
 
             var user = _users.SingleOrDefault(x => x.UserName == username && x.Password == Encrypt.getSHA256(password));
             if (user == null) return null;
@@ -57,14 +59,6 @@ namespace Sistema_Veterinaria.Helpers
             return user;
         }
 
-        public IEnumerable<Usuarios> GetAll()
-        {
-            return _users.Select(x => {
-                x.Password = null;
-                return x;
-            });
-
-        }
     }
 
 }

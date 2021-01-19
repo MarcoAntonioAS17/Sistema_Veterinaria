@@ -8,6 +8,7 @@ using Sistema_Veterinaria.Models;
 using System.Net;
 using Microsoft.AspNetCore.Authorization;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.DataProtection;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -18,11 +19,16 @@ namespace Sistema_Veterinaria.Controllers
     [ApiController]
     public class ProveedoresController : ControllerBase
     {
+        private veterinariaContext context;
+        public ProveedoresController(veterinariaContext ctx, IDataProtectionProvider provider)
+        {
+            this.context = ctx;
+        }
+
         // GET: api/<ProveedoresController>
         [HttpGet]
         public IEnumerable<Proveedores> Get()
         {
-            var context = new veterinariaContext();
             var proveedores = context.Proveedores.ToList();
             return proveedores;
         }
@@ -31,7 +37,6 @@ namespace Sistema_Veterinaria.Controllers
         [HttpGet("{id}")]
         public Proveedores Get(int id)
         {
-            var context = new veterinariaContext();
             Proveedores proveedores = (from pro in context.Proveedores
                                        where pro.IdProveedores == id
                                  select pro).FirstOrDefault<Proveedores>();
@@ -56,7 +61,6 @@ namespace Sistema_Veterinaria.Controllers
 
                 try
                 {
-                    var context = new veterinariaContext();
                     context.Proveedores.Add(value);
                     context.SaveChanges();
                 }
@@ -85,7 +89,6 @@ namespace Sistema_Veterinaria.Controllers
             {
                 try
                 {
-                    var context = new veterinariaContext();
                     Proveedores proveedores = (from pro in context.Proveedores
                                                where pro.IdProveedores == id
                                         select pro).FirstOrDefault<Proveedores>();
@@ -127,7 +130,6 @@ namespace Sistema_Veterinaria.Controllers
             {
                 try
                 {
-                    var context = new veterinariaContext();
                     Proveedores proveedor = (from pro in context.Proveedores
                                         where pro.IdProveedores == id
                                         select pro).FirstOrDefault<Proveedores>();

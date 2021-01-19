@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Sistema_Veterinaria.Models;
 using System.Net;
+using Microsoft.AspNetCore.DataProtection;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -17,11 +18,17 @@ namespace Sistema_Veterinaria.Controllers
     [ApiController]
     public class ComprasController : ControllerBase
     {
+        private veterinariaContext context;
+        public ComprasController(veterinariaContext ctx, IDataProtectionProvider provider)
+        {
+            this.context = ctx;
+        }
+
         // GET: api/<ComprasController>
         [HttpGet]
         public IEnumerable<Compra> Get()
         {
-            var context = new veterinariaContext();
+            
             var compras = from comp in context.Compras
                          join prove in context.Proveedores on comp.RProveedor equals prove.IdProveedores
                          join user in context.Usuarios on comp.RUsuario equals user.IdUser
@@ -59,7 +66,7 @@ namespace Sistema_Veterinaria.Controllers
         [HttpGet("{id}")]
         public Compra Get(int id)
         {
-            var context = new veterinariaContext();
+            
             Compra compra = (from comp in context.Compras
                              join prove in context.Proveedores on comp.RProveedor equals prove.IdProveedores
                              join user in context.Usuarios on comp.RUsuario equals user.IdUser
@@ -108,7 +115,7 @@ namespace Sistema_Veterinaria.Controllers
             }
             else
             {
-                var context = new veterinariaContext();
+                
                 var transaccion = context.Database.BeginTransaction();
                 try
                 {
@@ -170,7 +177,7 @@ namespace Sistema_Veterinaria.Controllers
         {
             bool error = false;
 
-            var context = new veterinariaContext();
+           
             var transaccion = context.Database.BeginTransaction();
             try
             {

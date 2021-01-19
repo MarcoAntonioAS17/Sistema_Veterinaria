@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Sistema_Veterinaria.Models;
 using System.Net;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.DataProtection;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Sistema_Veterinaria.Controllers
@@ -19,11 +20,16 @@ namespace Sistema_Veterinaria.Controllers
     //[EnableCors (Startup.MY_CORS)] 
     public class ClientesController : ControllerBase
     {
+        private veterinariaContext context;
+        public ClientesController(veterinariaContext ctx, IDataProtectionProvider provider)
+        {
+            this.context = ctx;
+        }
+
         // GET: api/<ClientesController>
         [HttpGet]
         public IEnumerable<Clientes> Get()
-        {
-            var context = new veterinariaContext();
+        {            
             var clientes = context.Clientes.ToList();
             return clientes;
         }
@@ -32,7 +38,6 @@ namespace Sistema_Veterinaria.Controllers
         [HttpGet("{id}")]
         public Clientes Get(int id)
         {
-            var context = new veterinariaContext();
             Clientes clientes = (from cli in context.Clientes
                                  where cli.IdClientes == id select cli).FirstOrDefault<Clientes> ();
             return clientes;
@@ -54,7 +59,7 @@ namespace Sistema_Veterinaria.Controllers
                 value.Correo = WebUtility.HtmlEncode(value.Correo);
 
                 try{
-                    var context = new veterinariaContext();
+                    
                     context.Clientes.Add(value);
                     context.SaveChanges();
                 }catch( Exception ex){
@@ -81,7 +86,7 @@ namespace Sistema_Veterinaria.Controllers
             {
                 try
                 {
-                    var context = new veterinariaContext();
+                    
                     Clientes cliente = (from cli in context.Clientes
                                          where cli.IdClientes == id
                                          select cli).FirstOrDefault<Clientes>();
@@ -122,7 +127,7 @@ namespace Sistema_Veterinaria.Controllers
             {
                 try
                 {
-                    var context = new veterinariaContext();
+                    
                     Clientes cliente = (from cli in context.Clientes
                                         where cli.IdClientes == id
                                         select cli).FirstOrDefault<Clientes>();

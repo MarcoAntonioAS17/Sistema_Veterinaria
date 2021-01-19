@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Sistema_Veterinaria.Models;
+using Microsoft.AspNetCore.DataProtection;
 
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -16,12 +17,17 @@ namespace Sistema_Veterinaria.Controllers
     [ApiController]
     public class ConfigController : ControllerBase
     {
-        
+        private veterinariaContext context;
+        public ConfigController(veterinariaContext ctx, IDataProtectionProvider provider)
+        {
+            this.context = ctx;
+        }
+
         // GET api/<ConfigController>/5
         [HttpGet]
         public Configuracion Get()
         {
-            var context = new veterinariaContext();
+         
             Configuracion configuracion = (from config in context.Configuracion
                                            where config.Clave == 1
                                            select config).FirstOrDefault<Configuracion>();
@@ -58,7 +64,7 @@ namespace Sistema_Veterinaria.Controllers
             {
                 try
                 {
-                    var context = new veterinariaContext();
+                   
                     Configuracion configuracion = (from config in context.Configuracion
                                                    where config.Clave == 1
                                                    select config).FirstOrDefault<Configuracion>();

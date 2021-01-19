@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Sistema_Veterinaria.Models;
 using System.Net;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -17,11 +18,18 @@ namespace Sistema_Veterinaria.Controllers
     [ApiController]
     public class VentasController : ControllerBase
     {
+
+        private veterinariaContext context;
+        public VentasController (veterinariaContext ctx, IDataProtectionProvider provider)
+        {
+            this.context = ctx;
+        }
+
         // GET: api/<VentasController>
         [HttpGet]
         public IEnumerable<Venta> Get()
         {
-            var context = new veterinariaContext();
+            
             var ventas = from vent in context.Ventas
                          join cli in context.Clientes on vent.RCliente equals cli.IdClientes
                          join user in context.Usuarios on vent.RUsuario equals user.IdUser
@@ -61,7 +69,7 @@ namespace Sistema_Veterinaria.Controllers
         [HttpGet("{id}")]
         public Venta Get(int id)
         {
-            var context = new veterinariaContext();
+            
             Venta ventas = (from vent in context.Ventas
                             join cli in context.Clientes on vent.RCliente equals cli.IdClientes
                             join user in context.Usuarios on vent.RUsuario equals user.IdUser
@@ -110,7 +118,6 @@ namespace Sistema_Veterinaria.Controllers
             }
             else
             {
-                var context = new veterinariaContext();
                 var transaccion = context.Database.BeginTransaction();
                 try
                 {
@@ -229,7 +236,6 @@ namespace Sistema_Veterinaria.Controllers
         {
             bool error = false;
 
-            var context = new veterinariaContext();
             var transaccion = context.Database.BeginTransaction();
             try
             {   

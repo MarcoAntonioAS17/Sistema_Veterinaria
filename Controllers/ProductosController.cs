@@ -8,6 +8,7 @@ using Sistema_Veterinaria.Models;
 using System.Net;
 using Microsoft.AspNetCore.Authorization;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.DataProtection;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -18,11 +19,16 @@ namespace Sistema_Veterinaria.Controllers
     [ApiController]
     public class ProductosController : ControllerBase
     {
+        private veterinariaContext context;
+        public ProductosController(veterinariaContext ctx, IDataProtectionProvider provider)
+        {
+            this.context = ctx;
+        }
+
         // GET: api/<ProductosController>
         [HttpGet]
         public IEnumerable<Producto> Get()
         {
-            var context = new veterinariaContext();
             var producto = from pro in context.Productos
                            join prove in context.Proveedores on pro.RProveedor equals prove.IdProveedores
                            join cate in context.Categorias on pro.RCategoria equals cate.IdCategorias
@@ -51,7 +57,7 @@ namespace Sistema_Veterinaria.Controllers
         [HttpGet("{id}")]
         public Producto Get(String id)
         {
-            var context = new veterinariaContext();
+
             var producto = (from pro in context.Productos
                             join prove in context.Proveedores on pro.RProveedor equals prove.IdProveedores
                             join cate in context.Categorias on pro.RCategoria equals cate.IdCategorias
@@ -93,7 +99,6 @@ namespace Sistema_Veterinaria.Controllers
 
                 try
                 {
-                    var context = new veterinariaContext();
                     context.Productos.Add(value);
                     context.SaveChanges();
                 }
@@ -120,7 +125,6 @@ namespace Sistema_Veterinaria.Controllers
             {
                 try
                 {
-                    var context = new veterinariaContext();
                     Productos producto = (from pro in context.Productos
                                     join prove in context.Proveedores on pro.RProveedor equals prove.IdProveedores
                                     join cate in context.Categorias on pro.RCategoria equals cate.IdCategorias
@@ -166,7 +170,6 @@ namespace Sistema_Veterinaria.Controllers
             {
                 try
                 {
-                    var context = new veterinariaContext();
                     Productos producto = (from pro in context.Productos
                                     join prove in context.Proveedores on pro.RProveedor equals prove.IdProveedores
                                     join cate in context.Categorias on pro.RCategoria equals cate.IdCategorias

@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Sistema_Veterinaria.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 
 namespace Sistema_Veterinaria
 {
@@ -36,6 +37,9 @@ namespace Sistema_Veterinaria
             //Habilitando JWT Authentication
             var jwtSection = Configuration.GetSection("JwtSettings");
             services.Configure<JWTSettings>(jwtSection);
+
+            services.AddDbContext<Models.veterinariaContext>(options =>
+                options.UseMySql (Configuration.GetConnectionString("veterinariaConnection")), ServiceLifetime.Singleton);
 
             var jwtSettings = jwtSection.Get<JWTSettings>();
             var key = System.Text.Encoding.ASCII.GetBytes(jwtSettings.Secret);

@@ -30,11 +30,7 @@ namespace Sistema_Veterinaria.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (!optionsBuilder.IsConfigured)
-            {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseMySql("server=localhost;database=veterinaria;user=root;password=2351043820", x => x.ServerVersion("8.0.21-mysql"));
-            }
+            
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

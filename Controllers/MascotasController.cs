@@ -7,6 +7,7 @@ using Sistema_Veterinaria.Models;
 using System.Net;
 using Microsoft.AspNetCore.Authorization;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.DataProtection;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -17,11 +18,16 @@ namespace Sistema_Veterinaria.Controllers
     [ApiController]
     public class MascotasController : ControllerBase
     {
+        private veterinariaContext context;
+        public MascotasController(veterinariaContext ctx, IDataProtectionProvider provider)
+        {
+            this.context = ctx;
+        }
+
         // GET: api/<MascotasController>
         [HttpGet]
         public IEnumerable<Mascota> Get()
         {
-            var context = new veterinariaContext();
             var mascota = from m in context.Mascotas
                           join c in context.Clientes on m.RCliente equals c.IdClientes
                           orderby m.IdMascotas ascending
@@ -43,7 +49,6 @@ namespace Sistema_Veterinaria.Controllers
         [HttpGet("{id}")]
         public Mascota Get(int id)
         {
-            var context = new veterinariaContext();
             var mascota = (from m in context.Mascotas
                           join c in context.Clientes on m.RCliente equals c.IdClientes
                           orderby m.IdMascotas ascending
@@ -66,7 +71,6 @@ namespace Sistema_Veterinaria.Controllers
         [HttpGet("Cliente/{id}")]
         public IEnumerable<Mascota> GetbyCliente(int id)
         {
-            var context = new veterinariaContext();
             var mascota = from m in context.Mascotas
                           join c in context.Clientes on m.RCliente equals c.IdClientes
                           orderby m.IdMascotas ascending
@@ -103,7 +107,6 @@ namespace Sistema_Veterinaria.Controllers
 
                 try
                 {
-                    var context = new veterinariaContext();
                     context.Mascotas.Add(value);
                     context.SaveChanges();
                 }
@@ -134,7 +137,6 @@ namespace Sistema_Veterinaria.Controllers
                 
                 try
                 {
-                    var context = new veterinariaContext();
                     Mascotas mascota = (from m in context.Mascotas
                                         where m.IdMascotas == id
                                         select m).FirstOrDefault<Mascotas>();
@@ -177,7 +179,6 @@ namespace Sistema_Veterinaria.Controllers
             {
                 try
                 {
-                    var context = new veterinariaContext();
                     Mascotas mascota = (from m in context.Mascotas
                                         where m.IdMascotas == id
                                         select m).FirstOrDefault<Mascotas>();

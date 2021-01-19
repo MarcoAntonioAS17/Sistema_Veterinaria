@@ -8,7 +8,6 @@ namespace Sistema_Veterinaria.Helpers
 {
     public interface IUserService
     {
-        Usuarios Authenticate(string username, string password);
-        IEnumerable<Usuarios> GetAll();
+        Usuarios Authenticate(veterinariaContext context, string username, string password);
     }
 }

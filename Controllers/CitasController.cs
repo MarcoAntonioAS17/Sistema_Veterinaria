@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Sistema_Veterinaria.Models;
 using System.Net;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.DataProtection;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Sistema_Veterinaria.Controllers
@@ -17,11 +18,16 @@ namespace Sistema_Veterinaria.Controllers
     [ApiController]
     public class CitasController : ControllerBase
     {
+        private veterinariaContext context;
+        public CitasController(veterinariaContext ctx, IDataProtectionProvider provider)
+        {
+            this.context = ctx;
+        }
+
         // GET: api/<CitasController>
         [HttpGet]
         public IEnumerable<Cita> Get()
         {
-            var context = new veterinariaContext();
             var citas = from cit in context.Citas
                         join cli in context.Clientes on cit.RCliente equals cli.IdClientes
                         join mas in context.Mascotas on cit.RMascota equals mas.IdMascotas
@@ -45,7 +51,6 @@ namespace Sistema_Veterinaria.Controllers
         [HttpGet("Inicio")]
         public IEnumerable<Cita> GetInicio()
         {
-            var context = new veterinariaContext();
             var citas = from cit in context.Citas
                         join cli in context.Clientes on cit.RCliente equals cli.IdClientes
                         join mas in context.Mascotas on cit.RMascota equals mas.IdMascotas
@@ -70,7 +75,6 @@ namespace Sistema_Veterinaria.Controllers
         [HttpGet("{id}")]
         public Cita Get(int id)
         {
-            var context = new veterinariaContext();
             var cita = (from cit in context.Citas
                         join cli in context.Clientes on cit.RCliente equals cli.IdClientes
                         join mas in context.Mascotas on cit.RMascota equals mas.IdMascotas
@@ -107,7 +111,6 @@ namespace Sistema_Veterinaria.Controllers
                 value.Tipo = WebUtility.HtmlEncode(value.Tipo);
                 try
                 {
-                    var context = new veterinariaContext();
                     context.Citas.Add(value);
                     context.SaveChanges();
                 }
@@ -136,7 +139,6 @@ namespace Sistema_Veterinaria.Controllers
             {
                 try
                 {
-                    var context = new veterinariaContext();
                     Citas cita = (from cit in context.Citas
                                         where cit.IdCitas== id
                                         select cit).FirstOrDefault<Citas>();
@@ -178,7 +180,6 @@ namespace Sistema_Veterinaria.Controllers
 
                 try
                 {
-                    var context = new veterinariaContext();
                     Citas cita = (from cit in context.Citas
                                   where cit.IdCitas == id
                                   select cit).FirstOrDefault<Citas>();
@@ -205,8 +206,7 @@ namespace Sistema_Veterinaria.Controllers
             if (value.RCliente == null || value.RMascota == null || value.FechaHora == null)
                 error = true;
 
-            var contex = new veterinariaContext();
-            int mascotas = (from masc in contex.Mascotas
+            int mascotas = (from masc in context.Mascotas
                                  where masc.RCliente == value.RCliente && masc.IdMascotas == value.RMascota
                                  select masc).Count();
             if (mascotas < 1)

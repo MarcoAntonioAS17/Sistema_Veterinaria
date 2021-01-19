@@ -8,6 +8,7 @@ using Sistema_Veterinaria.Models;
 using System.Net;
 using Sistema_Veterinaria.Encryption;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -18,11 +19,15 @@ namespace Sistema_Veterinaria.Controllers
     [ApiController]
     public class UsuariosController : ControllerBase
     {
+        private veterinariaContext context;
+        public UsuariosController(veterinariaContext ctx, IDataProtectionProvider provider)
+        {
+            this.context = ctx;
+        }
         // GET: api/<UsuariosController>
         [HttpGet]
         public IEnumerable<Usuario> Get()
         {
-            var context = new veterinariaContext();
             var usuarios = from usu in context.Usuarios
                            orderby usu.IdUser
                            select new Usuario
@@ -39,7 +44,6 @@ namespace Sistema_Veterinaria.Controllers
         [HttpGet("{id}")]
         public Usuario Get(int id)
         {
-            var context = new veterinariaContext();
             Usuario usuario = (from usu in context.Usuarios
                            orderby usu.IdUser
                            where usu.IdUser == id
@@ -70,7 +74,6 @@ namespace Sistema_Veterinaria.Controllers
                 value.UserName = WebUtility.HtmlDecode(value.UserName);
                 try
                 {
-                    var context = new veterinariaContext();
                     context.Usuarios.Add(value);
                     context.SaveChanges();
                 }catch (Exception ex)
@@ -102,7 +105,6 @@ namespace Sistema_Veterinaria.Controllers
             {
                 try
                 {
-                    var context = new veterinariaContext();
                     Usuarios usuario = (from usu in context.Usuarios
                                          where usu.IdUser == id && usu.UserName == value.UserName 
                                          && usu.Password == Encrypt.getSHA256(value.Password)
@@ -143,7 +145,6 @@ namespace Sistema_Veterinaria.Controllers
             {
                 try
                 {
-                    var context = new veterinariaContext();
                     Usuarios usuario = (from usu in context.Usuarios
                                         where usu.IdUser == id
                                         select usu).SingleOrDefault<Usuarios>();

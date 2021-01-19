@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Sistema_Veterinaria.Models;
 using System.Net;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -17,11 +18,16 @@ namespace Sistema_Veterinaria.Controllers
     [ApiController]
     public class InicioController : ControllerBase
     {
+        private veterinariaContext context;
+        public InicioController(veterinariaContext ctx, IDataProtectionProvider provider)
+        {
+            this.context = ctx;
+        }
+
         // GET: api/<InicioController>
         [HttpGet]
         public IActionResult Get()
         {
-            var context = new veterinariaContext();
 
             int contactos = 0;
             int productos = 0;
