@@ -48,7 +48,15 @@ namespace Sistema_Veterinaria.Controllers
             return Ok(foo);
         }
 
-        
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            var users = _userService.GetAll(context);
+            return Ok(users);
+        }
+
+
+
         [HttpGet("getuser/{cipherID}")]
         public Usuarios GetUser(string cipherID)
         {

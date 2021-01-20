@@ -59,6 +59,16 @@ namespace Sistema_Veterinaria.Helpers
             return user;
         }
 
+        public IEnumerable<Usuarios> GetAll(veterinariaContext context)
+        {
+            List<Usuarios> _users = new List<Usuarios>();
+            _users = GetUsuarios(context);
+
+            return _users.Select(x => {
+                x.Password = null;
+                return x;
+            });
+        }
     }
 
 }
